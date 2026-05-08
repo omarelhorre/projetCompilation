@@ -58,3 +58,13 @@ void set_value(char* name, int val)
     }
     table[i].value = val;
 }
+//to be in .l
+void yyerror(const char* msg)
+{
+    fprintf(stderr,"\n == erreur == \n");
+    fprintf(stderr, "Ligne : %s\n", yylineno);
+    fprintf(stderr, "Ligne : %s", msg);
+    fprintf(stderr, "Ligne : %s\n", yytext);
+    fprintf(stderr,"== erreur == \n");
+
+}
