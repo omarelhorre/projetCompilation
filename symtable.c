@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "symtable.h"
-
 #define MAX 256
-
+extern int nb_erreurs;
 static Symbol table[MAX];
 static int count;
 
@@ -16,6 +15,7 @@ static int find(char* name)
         if(strcmp(table[i].name, name) == 0)
         return i;
     }
+    nb_erreurs++;
     return -1;
 }
 
@@ -34,6 +34,7 @@ void declare(char* name)
     strncpy(table[count].name, name, 63);
     strncpy(table[count].type, "int", 15);
     table[count].value = 0;
+    count++;
     printf("table de symbole : declaration %s \n",name);
 }
 
@@ -42,8 +43,10 @@ int lookup(char* name)
     int index = find(name);
     if(index == -1)
     {
-        fprintf(stderr,"variable inexistante");
+        nb_erreurs++;
+        fprintf(stderr,"variable inexistante %s\n",name);
         return -1;
+
     }
     return table[index].value;
 }
@@ -53,18 +56,9 @@ void set_value(char* name, int val)
     int i = find(name);
     if(i == -1)
     {
-        fprintf(stderr,"variable inexistante");
+      //  fprintf(stderr,"variable inexistante\n");
         return;
     }
     table[i].value = val;
 }
 //to be in .l
-void yyerror(const char* msg)
-{
-    fprintf(stderr,"\n == erreur == \n");
-    fprintf(stderr, "Ligne : %s\n", yylineno);
-    fprintf(stderr, "Ligne : %s", msg);
-    fprintf(stderr, "Ligne : %s\n", yytext);
-    fprintf(stderr,"== erreur == \n");
-
-}
