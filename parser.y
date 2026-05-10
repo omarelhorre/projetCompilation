@@ -3,11 +3,12 @@
 #include <stdlib.h>     
 #include <string.h>     
 #include "symtable.h"  
+#include "symtable.c"
 #include<math.h> 
 extern int yylex(void);        
 extern int yylineno;           
 extern char *yytext; 
-int nb_erreurs;         
+int nb_erreurs=0;         
 void yyerror(const char *s);   
 %}
 
@@ -115,13 +116,14 @@ expr:
     ;
 
 cond:
-      expr GT expr
-    | expr LT expr
-    | expr GE expr
-    | expr LE expr
-    | expr NE expr
-    | expr EQ expr
-    | expr SEQ expr
+      expr GT expr 
+    | expr LT expr 
+    | expr GE expr 
+    | expr LE expr  
+    | expr NE expr 
+    | expr EQ expr  
+    | expr SEQ expr  
+    
     ;
 
 %%
@@ -135,7 +137,13 @@ void yyerror(const char *msg) {
 
 int main()
 {
-    yyparse();
-    nb_erreurs== 0? printf("Programme correcte\n") : printf("Programme incorrecte\n");
-    return 0;
+    int result = yyparse();
+    
+    if (result == 0 && nb_erreurs == 0) {
+        printf(" Programme correcte\n");
+    } else {
+        printf(" Programme incorrecte\n");
+    }
+    
+    return result;
 }

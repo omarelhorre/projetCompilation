@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -497,10 +497,10 @@ char *yytext;
 #include "parser.tab.h"
 
 /* Variables pour la gestion des erreurs (ligne/colonne) */
-int num_ligne = 1;
+int yylineno  = 1;
 int num_colonne = 1;
+#line 502 "lex.yy.c"
 #line 503 "lex.yy.c"
-#line 504 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -511,7 +511,7 @@ int num_colonne = 1;
  */
 #include <unistd.h>
 #endif
-
+    
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
 #endif
@@ -720,7 +720,7 @@ YY_DECL
 #line 25 "lexer.l"
 
 
-#line 724 "lex.yy.c"
+#line 723 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -946,7 +946,7 @@ case 34:
 /* rule 34 can match eol */
 YY_RULE_SETUP
 #line 64 "lexer.l"
-{ num_ligne++; num_colonne = 1; }
+{ yylineno++; num_colonne = 1; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
@@ -956,14 +956,14 @@ YY_RULE_SETUP
 case 36:
 YY_RULE_SETUP
 #line 68 "lexer.l"
-{ fprintf(stderr,"[ERREUR LEXICALE] Ligne %d, Colonne %d : caractère '%s' non reconnu\n", num_ligne, num_colonne, yytext); num_colonne += yyleng;}
+{ fprintf(stderr,"[ERREUR LEXICALE] Ligne %d, Colonne %d : caractère '%s' non reconnu\n", yylineno, num_colonne, yytext); num_colonne += yyleng;}
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 70 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 967 "lex.yy.c"
+#line 966 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

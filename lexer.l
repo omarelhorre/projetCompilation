@@ -10,7 +10,7 @@
 #include "parser.tab.h"
 
 /* Variables pour la gestion des erreurs (ligne/colonne) */
-int num_ligne = 1;
+int yylineno  = 1;
 int num_colonne = 1;
 %}
 
@@ -61,10 +61,10 @@ commentaire     "//".*
 
 {espace}        { num_colonne++;}
 
-{fin_ligne}     { num_ligne++; num_colonne = 1; }
+{fin_ligne}     { yylineno++; num_colonne = 1; }
 
 {commentaire}   { /* ignorer les commentaires */ }
 
-.    { fprintf(stderr,"[ERREUR LEXICALE] Ligne %d, Colonne %d : caractère '%s' non reconnu\n", num_ligne, num_colonne, yytext); num_colonne += yyleng;}
+.    { fprintf(stderr,"[ERREUR LEXICALE] Ligne %d, Colonne %d : caractère '%s' non reconnu\n", yylineno, num_colonne, yytext); num_colonne += yyleng;}
 
 %%

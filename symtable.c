@@ -6,8 +6,6 @@
 extern int nb_erreurs;
 static Symbol table[MAX];
 static int count;
-
-
 static int find(char* name)
 {
     for(int i = 0 ; i < count ; i++)
@@ -59,6 +57,9 @@ void set_value(char* name, int val)
       //  fprintf(stderr,"variable inexistante\n");
         return;
     }
-    table[i].value = val;
-}
-//to be in .l
+    table[i].value = val;}
+  int get_value(char* name){
+    return lookup(name);
+}  
+
+
