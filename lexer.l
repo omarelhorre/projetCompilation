@@ -46,6 +46,7 @@ commentaire     "//".*
 "!="            { return NE; }
 "=="            { return EQ; }
 "==="           { return SEQ; }
+"+"             { return PLUS; }
 "-"             { return MINUS; }
 "*"             { return MUL; }
 "/"             { return DIV; }

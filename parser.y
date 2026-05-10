@@ -40,10 +40,11 @@ void yyerror(const char *s);
 %token SEQ        /* ===    */
 
 /*pour les operations arithmetique*/
-%token MINUS     
-%token MUL        
-%token DIV        
-%token MOD      
+%token PLUS
+%token MINUS
+%token MUL
+%token DIV
+%token MOD
 %token POW
 
 /*union pour stocker les valeurs de token */
@@ -63,7 +64,7 @@ void yyerror(const char *s);
 
 %nonassoc GT LT GE LE NE EQ SEQ    /*plus faible comparaison*/
 
-%left MINUS
+%left PLUS MINUS
 
 %left MUL DIV MOD
 
@@ -92,6 +93,7 @@ instr:
         { set_value($1, $3,yylineno-1); }
 
     | WRITE expr
+        { printf("%d\n", $2); }
 
     | READ LPAREN ID RPAREN
         { lookup($3,yylineno-1); }
@@ -101,13 +103,35 @@ instr:
     | IF LPAREN cond RPAREN THEN listinstr FI
 
     | IF LPAREN cond RPAREN THEN listinstr ELSE listinstr FI
+
+    | FOR ID ASSIGN expr TO expr DO listinstr DONE
+        { set_value($2, $4, yylineno-1); }
     ;
 
 expr:
-    expr MINUS expr      { $$ = $1 - $3; }
+    expr PLUS expr         { $$ = $1 + $3; }
+    | expr MINUS expr      { $$ = $1 - $3; }
     | expr MUL expr        { $$ = $1 * $3; }
-    | expr DIV expr        { $$ = $1 / $3; }
-    | expr MOD expr        { $$ = $1 % $3; }
+    | expr DIV expr
+        {
+            if ($3 == 0) {
+                fprintf(stderr, "division par zero a la ligne %d\n", yylineno-1);
+                nb_erreurs++;
+                $$ = 0;
+            } else {
+                $$ = $1 / $3;
+            }
+        }
+    | expr MOD expr
+        {
+            if ($3 == 0) {
+                fprintf(stderr, "modulo par zero a la ligne %d\n", yylineno-1);
+                nb_erreurs++;
+                $$ = 0;
+            } else {
+                $$ = $1 % $3;
+            }
+        }
     | expr POW expr        { $$ = (int)pow($1, $3); }
     | ID                   { $$ = lookup($1,yylineno-1); }
     | NUM                  { $$ = $1; }
@@ -133,9 +157,13 @@ void yyerror(const char *msg) {
     nb_erreurs++;
 }
 
-int main()
+int main(void)
 {
     yyparse();
-    nb_erreurs== 0? printf("Programme correcte\n") : printf("Programme incorrecte\n");
-    return 0;
+    if (nb_erreurs == 0) {
+        printf("Programme correcte\n");
+        return 0;
+    }
+    printf("Programme incorrecte\n");
+    return 1;
 }
