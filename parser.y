@@ -81,8 +81,8 @@ program:
     ;
 
 listinstr:
-    instr
-    | instr listinstr
+    instr listinstr
+    | instr 
     ;
 
 instr:
