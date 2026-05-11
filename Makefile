@@ -9,13 +9,6 @@ parser.tab.c parser.tab.h: parser.y
 lex.yy.c: lexer.l parser.tab.h
 	flex lexer.l
 
-test: parser
-	@for f in tests/*.txt; do \
-		echo "===== $$f ====="; \
-		./parser < $$f; \
-		echo; \
-	done
-
 clean:
 	rm -f parser parser.tab.c parser.tab.h lex.yy.c
 

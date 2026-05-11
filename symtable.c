@@ -22,7 +22,7 @@ void declare(char* name, int ligne)
 {
     if(find(name) != -1)
     {
-        fprintf(stderr,"variable %s déja declare dans la table a la ligne %d\n",name,ligne);
+        fprintf(stderr,"variable %s deja declare dans la table a la ligne %d\n",name,ligne);
         nb_erreurs++;
         return;
     }
