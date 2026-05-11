@@ -4,11 +4,14 @@
 #include <string.h>     
 #include "symtable.h"  
 #include<math.h> 
-extern int yylex(void);        
-extern int yylineno;           
-extern char *yytext; 
+extern int yylex(void);
+extern int yylineno;
+extern char *yytext;
+extern int prev_tok_line;
+extern char prev_tok_text[];
 int nb_erreurs;         
 void yyerror(const char *s);   
+void afficherTabSym();
 %}
 
 %token BEGIN_T    
@@ -87,16 +90,16 @@ listinstr:
 
 instr:
     INT ID
-        { declare($2,yylineno-1); }
+        { declare($2,yylineno); }
 
     | ID ASSIGN expr
-        { set_value($1, $3,yylineno-1); }
+        { set_value($1, $3,yylineno); }
 
     | WRITE expr
         { printf("%d\n", $2); }
 
     | READ LPAREN ID RPAREN
-        { lookup($3,yylineno-1); }
+        { lookup($3,yylineno); }
 
     | WHILE LPAREN cond RPAREN DO listinstr OD
 
@@ -105,7 +108,7 @@ instr:
     | IF LPAREN cond RPAREN THEN listinstr ELSE listinstr FI
 
     | FOR ID ASSIGN expr TO expr DO listinstr DONE
-        { set_value($2, $4, yylineno-1); }
+        { set_value($2, $4, yylineno); }
     ;
 
 expr:
@@ -115,7 +118,7 @@ expr:
     | expr DIV expr
         {
             if ($3 == 0) {
-                fprintf(stderr, "division par zero a la ligne %d\n", yylineno-1);
+                fprintf(stderr, "division par zero a la ligne %d\n", yylineno);
                 nb_erreurs++;
                 $$ = 0;
             } else {
@@ -125,7 +128,7 @@ expr:
     | expr MOD expr
         {
             if ($3 == 0) {
-                fprintf(stderr, "modulo par zero a la ligne %d\n", yylineno-1);
+                fprintf(stderr, "modulo par zero a la ligne %d\n", yylineno);
                 nb_erreurs++;
                 $$ = 0;
             } else {
@@ -133,7 +136,7 @@ expr:
             }
         }
     | expr POW expr        { $$ = (int)pow($1, $3); }
-    | ID                   { $$ = lookup($1,yylineno-1); }
+    | ID                   { $$ = lookup($1,yylineno); }
     | NUM                  { $$ = $1; }
     | LPAREN expr RPAREN   { $$ = $2; }
     ;
@@ -151,19 +154,20 @@ cond:
 %%
 
 void yyerror(const char *msg) {
-    fprintf(stderr, " Erreur syntaxique a la ligne %d\n", yylineno-1);
+    fprintf(stderr, "Erreur syntaxique a la ligne %d : token inattendu '%s'\n", prev_tok_line, prev_tok_text);
     fprintf(stderr, "  Message : %s\n", msg);
-    fprintf(stderr, "  Token : '%s'\n", yytext);
     nb_erreurs++;
 }
 
 int main(void)
 {
     yyparse();
+    
     if (nb_erreurs == 0) {
         printf("Programme correcte\n");
         return 0;
     }
     printf("Programme incorrecte\n");
+    afficherTabSym();
     return 1;
 }
