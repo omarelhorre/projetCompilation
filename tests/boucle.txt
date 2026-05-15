@@ -7,6 +7,10 @@ begin
 
   for i := 1 to 5 do
     x := x + i
+<<<<<<< HEAD
+=======
+    write i
+>>>>>>> c98a4debc03c9cc71778ee0f0eabff8ad064f723
   don
 
   write x

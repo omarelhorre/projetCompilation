@@ -12,6 +12,21 @@
 /* Variables pour la gestion des erreurs (ligne/colonne) */
 
 int num_colonne = 1;
+int tok_line = 1;
+int prev_tok_line = 1;
+char prev_tok_text[256] = "";
+char cur_tok_text[256] = "";
+
+/* Update token tracking before every non-whitespace token action.
+   Bison reads one token ahead, so prev_tok_* holds the actual error token
+   while cur_tok_* is the lookahead when yyerror is called. */
+#define YY_USER_ACTION \
+    if (yytext[0] != ' ' && yytext[0] != '\t' && yytext[0] != '\n') { \
+        prev_tok_line = tok_line; \
+        tok_line = yylineno; \
+        strncpy(prev_tok_text, cur_tok_text, sizeof(prev_tok_text) - 1); \
+        strncpy(cur_tok_text, yytext, sizeof(cur_tok_text) - 1); \
+    }
 %}
 
 chiffre         [0-9]

@@ -62,4 +62,42 @@ void set_value(char* name, int val, int ligne)
     }
     table[i].value = val;
 }
-//to be in .l
+
+
+void afficherTabSym()
+{
+    for(int i = 0 ; i< count ; i++)
+    {
+        printf("%s ",table[i].name);
+        printf("%d ",table[i].value);
+        printf("\n");
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

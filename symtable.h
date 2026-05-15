@@ -11,4 +11,5 @@ typedef struct
 void declare(char* name, int ligne);
 void set_value(char* name, int val, int ligne);
 int lookup(char* name, int ligne);
+void afficherTabSym();
 #endif
