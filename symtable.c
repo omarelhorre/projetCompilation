@@ -43,16 +43,14 @@ int lookup(char* name, int ligne)
     int index = find(name);
     if(index == -1)
     {
-        if(ligne==0){
-            fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne+1);
-        }
-        else{
-        fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne);
-        }
-        nb_erreurs++;
-        return -1;
 
-    }
+            fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne+1);
+        
+    
+        nb_erreurs++;
+        return 0;}
+
+    
     return table[index].value;
 }
 

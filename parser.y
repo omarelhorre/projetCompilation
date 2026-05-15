@@ -7,6 +7,7 @@
 extern int yylex(void);        
 extern int yylineno;           
 extern char *yytext; 
+extern int num_colonne;
 int nb_erreurs;         
 void yyerror(const char *s);   
 %}
@@ -78,11 +79,13 @@ void yyerror(const char *s);
 
 program:
     BEGIN_T listinstr END
+    | error END { yyerrok; }
     ;
 
 listinstr:
     instr listinstr
     | instr 
+    | error listinstr { yyerrok; }
     ;
 
 instr:
@@ -105,7 +108,10 @@ instr:
     | IF LPAREN cond RPAREN THEN listinstr ELSE listinstr FI
 
     | FOR ID ASSIGN expr TO expr DO listinstr DONE
-        { set_value($2, $4, yylineno-1); }
+        { 
+            printf("Boucle FOR detectee pour la variable %s allant de %d a %d\n", $2, $4, $6);
+            set_value($2, $4, yylineno); 
+        }
     ;
 
 expr:
@@ -151,9 +157,7 @@ cond:
 %%
 
 void yyerror(const char *msg) {
-    fprintf(stderr, " Erreur syntaxique a la ligne %d\n", yylineno-1);
-    fprintf(stderr, "  Message : %s\n", msg);
-    fprintf(stderr, "  Token : '%s'\n", yytext);
+    fprintf(stderr, "ERREUR SYNTAXIQUE Ligne %d, Colonne %d : %s Token: '%s'\n", yylineno, num_colonne, msg, yytext);
     nb_erreurs++;
 }
 
