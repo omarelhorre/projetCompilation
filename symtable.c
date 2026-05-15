@@ -43,7 +43,12 @@ int lookup(char* name, int ligne)
     int index = find(name);
     if(index == -1)
     {
+        if(ligne==0){
+            fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne+1);
+        }
+        else{
         fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne);
+        }
         nb_erreurs++;
         return -1;
 
@@ -56,6 +61,7 @@ void set_value(char* name, int val, int ligne)
     int i = find(name);
     if(i == -1)
     {
+
         fprintf(stderr,"variable n'est pas declaree %s a la ligne %d\n",name,ligne);
         nb_erreurs++;
         return;

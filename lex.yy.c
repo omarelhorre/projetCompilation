@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -524,8 +524,8 @@ char *yytext;
 /* Variables pour la gestion des erreurs (ligne/colonne) */
 
 int num_colonne = 1;
+#line 527 "lex.yy.c"
 #line 528 "lex.yy.c"
-#line 529 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -536,7 +536,7 @@ int num_colonne = 1;
  */
 #include <unistd.h>
 #endif
-
+    
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
 #endif
@@ -745,7 +745,7 @@ YY_DECL
 #line 25 "lexer.l"
 
 
-#line 749 "lex.yy.c"
+#line 748 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1003,7 +1003,7 @@ YY_RULE_SETUP
 #line 71 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1007 "lex.yy.c"
+#line 1006 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

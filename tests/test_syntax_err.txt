@@ -2,4 +2,5 @@ begin
 int x
 x := 5 *
 write x
+write y
 end

@@ -58,7 +58,7 @@ void yyerror(const char *s);
 %token <num> NUM
 %token <str> ID
 
-%type <num> expr
+%type <num> expr  
 
 /*declaration des priorites*/
 
