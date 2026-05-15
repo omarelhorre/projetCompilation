@@ -5,7 +5,7 @@
 #define MAX 256
 extern int nb_erreurs;
 static Symbol table[MAX];
-static int count;
+static int count = 0;
 
 
 static int find(char* name)
@@ -22,7 +22,7 @@ void declare(char* name, int ligne)
 {
     if(find(name) != -1)
     {
-        fprintf(stderr,"variable %s deja declare dans la table a la ligne %d\n",name,ligne);
+        fprintf(stderr,"Erreur Semantique\nLigne : %d\nVariable : '%s', Probleme  : Variable deja declaree, Hint : Chaque variable ne peut etre declaree qu'une seule fois.\n",ligne,name);
         nb_erreurs++;
         return;
     }
@@ -35,7 +35,7 @@ void declare(char* name, int ligne)
     strncpy(table[count].type, "int", 15);
     table[count].value = 0;
     count++;
-    printf("table de symbole : declaration %s \n",name);
+    //printf("Declaration : '%s' (int, valeur initiale = 0)\n",name);
 }
 
 int lookup(char* name, int ligne)
@@ -43,7 +43,7 @@ int lookup(char* name, int ligne)
     int index = find(name);
     if(index == -1)
     {
-        fprintf(stderr,"variable inexistante %s a la ligne %d\n",name,ligne);
+        fprintf(stderr,"Erreur Semantique\nLigne : %d\nVariable : '%s', Probleme  : Variable inexistante,\nHint : Declarez la variable avec 'int %s' avant de l'utiliser.\n",ligne,name,name);
         nb_erreurs++;
         return -1;
 
@@ -56,7 +56,7 @@ void set_value(char* name, int val, int ligne)
     int i = find(name);
     if(i == -1)
     {
-        fprintf(stderr,"variable n'est pas declaree %s a la ligne %d\n",name,ligne);
+        fprintf(stderr,"Erreur Semantique\nLigne : %d\nVariable : '%s', Probleme  : Variable non declaree,\nHint : Declarez la variable avec 'int %s' avant de l'utiliser.\n",ligne,name,name);
         nb_erreurs++;
         return;
     }
@@ -73,10 +73,6 @@ void afficherTabSym()
         printf("\n");
     }
 }
-
-
-
-
 
 
 

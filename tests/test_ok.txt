@@ -1,5 +1,4 @@
 begin 
-int x 
 int i
 i:=0
 x:=0

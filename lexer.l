@@ -17,16 +17,25 @@ int prev_tok_line = 1;
 char prev_tok_text[256] = "";
 char cur_tok_text[256] = "";
 
-/* Update token tracking before every non-whitespace token action.
-   Bison reads one token ahead, so prev_tok_* holds the actual error token
-   while cur_tok_* is the lookahead when yyerror is called. */
 #define YY_USER_ACTION \
-    if (yytext[0] != ' ' && yytext[0] != '\t' && yytext[0] != '\n') { \
+    if(yytext[0] != ' ' && yytext[0] != '\t' && yytext[0] != '\n') { \
         prev_tok_line = tok_line; \
         tok_line = yylineno; \
         strncpy(prev_tok_text, cur_tok_text, sizeof(prev_tok_text) - 1); \
         strncpy(cur_tok_text, yytext, sizeof(cur_tok_text) - 1); \
-    }
+    } \
+
+static void suggerer(const char *car) {
+    /* Operateurs courants mal saisis */
+    if (strcmp(car, "=")  == 0)
+        fprintf(stderr, "     Suggestion : affectation -> ':='  |  egalite -> '=='\n");
+    else if (strcmp(car, "!") == 0)
+        fprintf(stderr, "     Suggestion : different de -> '!='\n");
+    else if (strcmp(car, "&") == 0 || strcmp(car, "|") == 0)
+        fprintf(stderr, "     Suggestion : les operateurs logiques ne sont pas supportes.\n");
+    else if (strcmp(car, ";") == 0)
+        fprintf(stderr, "     Suggestion : ce langage n'utilise pas de ';' en fin d'instruction.\n");
+}
 %}
 
 chiffre         [0-9]
@@ -75,12 +84,16 @@ commentaire     "//".*
 {identifiant}   { yylval.str = strdup(yytext); return ID; }
 {nombre}        { yylval.num = atoi(yytext); return NUM; }
 
-{espace}        { num_colonne++;}
+{espace}        { num_colonne++; }
 
 {fin_ligne}     { num_colonne = 1; }
 
 {commentaire}   { /* ignorer les commentaires */ }
 
-.    { fprintf(stderr,"[ERREUR LEXICALE] Ligne %d, Colonne %d : caractère '%s' non reconnu\n", yylineno, num_colonne, yytext); num_colonne += yyleng;}
+.   {
+        fprintf(stderr, "[ERREUR LEXICALE] Ligne %d, Colonne %d : caractere '%s' non reconnu\n", yylineno, num_colonne, yytext);
+        suggerer(yytext);
+        num_colonne += yyleng;
+    }
 
 %%

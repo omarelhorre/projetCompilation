@@ -1,19 +1,9 @@
-<<<<<<< HEAD
 /* A Bison parser, made by GNU Bison 2.7.  */
 
 /* Bison interface for Yacc-like parsers in C
    
       Copyright (C) 1984, 1989-1990, 2000-2012 Free Software Foundation, Inc.
    
-=======
-/* A Bison parser, made by GNU Bison 3.8.2.  */
-
-/* Bison interface for Yacc-like parsers in C
-
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
-   Inc.
-
->>>>>>> c98a4debc03c9cc71778ee0f0eabff8ad064f723
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
@@ -25,7 +15,7 @@
    GNU General Public License for more details.
    
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -96,12 +86,8 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
 {
-<<<<<<< HEAD
 /* Line 2058 of yacc.c  */
-#line 52 "parser.y"
-=======
-#line 55 "parser.y"
->>>>>>> c98a4debc03c9cc71778ee0f0eabff8ad064f723
+#line 66 "parser.y"
 
     int num;     //les nombres     
     char *str;  //les chaines
@@ -117,7 +103,6 @@ typedef union YYSTYPE
 
 extern YYSTYPE yylval;
 
-<<<<<<< HEAD
 #ifdef YYPARSE_PARAM
 #if defined __STDC__ || defined __cplusplus
 int yyparse (void *YYPARSE_PARAM);
@@ -126,14 +111,10 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-=======
-
->>>>>>> c98a4debc03c9cc71778ee0f0eabff8ad064f723
 int yyparse (void);
 #else
 int yyparse ();
 #endif
 #endif /* ! YYPARSE_PARAM */
-
 
 #endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
