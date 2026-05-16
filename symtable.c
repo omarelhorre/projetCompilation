@@ -59,11 +59,8 @@ int lookup(char *name, int ligne)
     int index = find(name);
 
     if (index == -1) {
-        fprintf(stderr,
-                "Erreur Semantique\nLigne : %d\nVariable : '%s'\n"
-                "Probleme : Variable non declaree\n"
-                "Hint : Declarez la variable avec 'int %s' avant de l'utiliser.\n",
-                ligne, name ? name : "(null)", name ? name : "(null)");
+        fprintf(stderr,"Erreur Semantique\nLigne : %d\nVariable : '%s'\n"
+            "Probleme : Variable non declaree\n",ligne, name ? name : "(null)", name ? name : "(null)");
         nb_erreurs++;
         return 0;
     }

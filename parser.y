@@ -66,7 +66,6 @@ static int jeton_fermeture(void)
             || strcmp(t, "else") == 0);
 }
 
-
 static void erreur_bloc_non_ferme(int ligne, const char *bloc, const char *closer)
 {
     enregistrer_erreur(ligne,
@@ -137,12 +136,12 @@ program:
 
     | error listinstr END
         {
-            enregistrer_erreur(@1.first_line,"Le programme doit commencer par le mot-cle 'begin'");
+            enregistrer_erreur(@1.first_line,"Le programme doit commencer obligatoirement  par le mot-cle 'begin'");
             yyerrok;
         }
     | BEGIN_T listinstr error
         {
-            enregistrer_erreur(@3.first_line,"Structure du programme invalide : impossible de fermer le programme avec 'end' (un mot-cle est probablement en trop ou mal place, ou une instruction est incomplete avant 'end'). Dernier token analyse : '%s'", prev_tok_text);
+            enregistrer_erreur(@3.first_line,"Structure du programme invalide : impossible de fermer le programme avec 'end' un mot-cle est probablement  mal place, ou une instruction est manquant avant 'end', Dernier token analyse est: '%s'", prev_tok_text);
             yyerrok;
         }
     ;
@@ -171,7 +170,7 @@ instr:
         {
             char d[256];
             snprintf(d, sizeof(d),
-                "Expression invalide dans l'affectation de la variable '%s'"
+            "Expression invalide dans l'affectation de la variable '%s'"
                 " (token inattendu : '%s')", $1, prev_tok_text);
             erreur_instr(@1.first_line, d);
             free($1);
@@ -199,14 +198,14 @@ instr:
 
     | READ LPAREN ID error
         {
-            enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans 'read(...)'");
+            enregistrer_erreur(@1.first_line, "Parenthese fermante  attendue dans 'read(...)'");
             free($3);
             yyerrok;
         }
     | READ LPAREN error
         { enregistrer_erreur(@1.first_line, "Identifiant attendu dans 'read(...)'"); yyerrok; }
     | READ error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'read'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante  attendue apres le mot-cle 'read'"); yyerrok; }
 
     | WHILE LPAREN cond RPAREN DO listinstr OD
         { instr_ok(); }
@@ -218,13 +217,13 @@ instr:
         { enregistrer_erreur(@1.first_line, "Mot-cle 'do' attendu apres la condition du 'while'"); yyerrok; }
 
     | WHILE LPAREN cond error
-        { enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans la condition du 'while'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese fermante  attendue dans la condition du 'while'"); yyerrok; }
 
     | WHILE LPAREN error
         { enregistrer_erreur(@1.first_line, "Condition invalide dans 'while(...)'"); yyerrok; }
 
     | WHILE error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'while'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante  attendue apres le mot-cle 'while'"); yyerrok; }
 
     | IF LPAREN cond RPAREN THEN listinstr FI
         { instr_ok(); }
@@ -242,13 +241,13 @@ instr:
         { enregistrer_erreur(@1.first_line, "Mot-cle 'then' attendu apres la condition du 'if'"); yyerrok; }
 
     | IF LPAREN cond error
-        { enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans  la condition du  'if'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese fermante  attendue dans  la condition du  'if'"); yyerrok; }
 
     | IF LPAREN error
         { enregistrer_erreur(@1.first_line, "Condition invalide dans 'if(...)'"); yyerrok; }
 
     | IF error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'if'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante  attendue apres le mot-cle 'if'"); yyerrok; }
 
 
     | FOR ID ASSIGN expr TO expr DO listinstr DONE
@@ -277,8 +276,7 @@ instr:
 
     | FOR ID error
         {
-            enregistrer_erreur(@2.first_line,
-                "Operateur d'affectation ':=' attendu apres la variable '%s' dans la boucle 'for'", $2);
+            enregistrer_erreur(@2.first_line,"Operateur d'affectation ':=' attendu apres la variable '%s' dans la boucle 'for'", $2);
             free($2);
             yyerrok;
         }
@@ -316,12 +314,11 @@ expr:
 
     | LPAREN expr error
         {
-            enregistrer_erreur(@1.first_line,"Parenthese fermante ')' manquante pour fermer l'expression entre parentheses (recu : '%s')", prev_tok_text);
+            enregistrer_erreur(@1.first_line,"Parenthese fermante  manquante pour fermer l'expression entre parentheses : '%s'", prev_tok_text);
             $$ = $2;
             yyerrok;
         }
     ;
-
 cond:
     expr GT expr
     | expr LT expr
@@ -333,7 +330,6 @@ cond:
     ;
 
 %%
-
 void yyerror(const char *msg) {
     (void)msg;
     vider_erreur_en_attente();
@@ -343,7 +339,6 @@ void yyerror(const char *msg) {
     snprintf(err_pending_msg, sizeof(err_pending_msg),
              "Erreur de syntaxe pres de '%s'", cur_tok_text);
 }
-
 int main(void)
 {
     yyparse();
