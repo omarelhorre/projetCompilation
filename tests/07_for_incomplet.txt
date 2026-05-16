@@ -1,0 +1,14 @@
+begin
+  int i
+  int x
+  x := 4
+  for i := 1 to 3 do
+    if( x>3 ) 
+    then
+    x := x + i
+    else
+    write 1
+    fi  
+    write x
+  done
+end

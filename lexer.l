@@ -9,6 +9,8 @@
 
 #include "parser.tab.h"
 
+extern int nb_erreurs;
+
 /* Variables pour la gestion des erreurs (ligne/colonne) */
 
 int num_colonne = 1;
@@ -17,13 +19,22 @@ int prev_tok_line = 1;
 char prev_tok_text[256] = "";
 char cur_tok_text[256] = "";
 
+/* Renseigne la position (ligne/colonne) de CHAQUE token pour Bison (%locations)
+   et met a jour le suivi de colonne, qui etait auparavant inoperant. */
 #define YY_USER_ACTION \
+    yylloc.first_line   = yylineno; \
+    yylloc.first_column = num_colonne; \
     if(yytext[0] != ' ' && yytext[0] != '\t' && yytext[0] != '\n') { \
         prev_tok_line = tok_line; \
         tok_line = yylineno; \
         strncpy(prev_tok_text, cur_tok_text, sizeof(prev_tok_text) - 1); \
+        prev_tok_text[sizeof(prev_tok_text) - 1] = '\0'; \
         strncpy(cur_tok_text, yytext, sizeof(cur_tok_text) - 1); \
+        cur_tok_text[sizeof(cur_tok_text) - 1] = '\0'; \
     } \
+    num_colonne += yyleng; \
+    yylloc.last_line   = yylineno; \
+    yylloc.last_column = num_colonne;
 
 static void suggerer(const char *car) {
     /* Operateurs courants mal saisis */
@@ -81,19 +92,27 @@ commentaire     "//".*
 "("             { return LPAREN; }
 ")"             { return RPAREN; }
 
-{identifiant}   { yylval.str = strdup(yytext); return ID; }
-{nombre}        { yylval.num = atoi(yytext); return NUM; }
+{identifiant}   {
+                    yylval.str = strdup(yytext);
+                    if (yylval.str == NULL) {
+                        fprintf(stderr, "[ERREUR FATALE] Memoire insuffisante\n");
+                        exit(EXIT_FAILURE);
+                    }
+                    return ID;
+                }
+{nombre}        { yylval.num = (int)strtol(yytext, NULL, 10); return NUM; }
 
-{espace}        { num_colonne++; }
+{espace}        { /* colonnes deja comptees par YY_USER_ACTION */ }
 
 {fin_ligne}     { num_colonne = 1; }
 
 {commentaire}   { /* ignorer les commentaires */ }
 
 .   {
-        fprintf(stderr, "[ERREUR LEXICALE] Ligne %d, Colonne %d : caractere '%s' non reconnu\n", yylineno, num_colonne, yytext);
+        fprintf(stderr, "[ERREUR LEXICALE] Ligne %d, Colonne %d : caractere '%s' non reconnu\n",
+                yylloc.first_line, yylloc.first_column, yytext);
         suggerer(yytext);
-        num_colonne += yyleng;
+        nb_erreurs++;
     }
 
 %%

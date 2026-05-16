@@ -1,0 +1,5 @@
+begin
+  int a
+  a := 1
+  write b
+end

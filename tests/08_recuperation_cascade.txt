@@ -1,0 +1,9 @@
+begin
+  int x
+  x := 5
+  if (x > 3 write) then
+    write 1
+  else
+    write 0
+  fi
+end

@@ -1,5 +1,6 @@
 begin
-  x := 5 - 0
   int x
+  int x
+  x := 7
   write x
 end
