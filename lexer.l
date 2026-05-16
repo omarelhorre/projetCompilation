@@ -11,16 +11,12 @@
 
 extern int nb_erreurs;
 
-/* Variables pour la gestion des erreurs (ligne/colonne) */
-
 int num_colonne = 1;
 int tok_line = 1;
 int prev_tok_line = 1;
 char prev_tok_text[256] = "";
 char cur_tok_text[256] = "";
 
-/* Renseigne la position (ligne/colonne) de CHAQUE token pour Bison (%locations)
-   et met a jour le suivi de colonne, qui etait auparavant inoperant. */
 #define YY_USER_ACTION \
     yylloc.first_line   = yylineno; \
     yylloc.first_column = num_colonne; \
@@ -109,7 +105,7 @@ commentaire     "//".*
 {commentaire}   { /* ignorer les commentaires */ }
 
 .   {
-        fprintf(stderr, "[ERREUR LEXICALE] Ligne %d, Colonne %d : caractere '%s' non reconnu\n",
+        fprintf(stderr, "ERREUR LEXICALE Ligne %d, Colonne %d : caractere '%s' non reconnu\n",
                 yylloc.first_line, yylloc.first_column, yytext);
         suggerer(yytext);
         nb_erreurs++;

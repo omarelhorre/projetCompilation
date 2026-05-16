@@ -1,5 +1,5 @@
 
-#line 3 "lex.yy.c"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -559,8 +559,8 @@ static void suggerer(const char *car) {
     else if (strcmp(car, ";") == 0)
         fprintf(stderr, "     Suggestion : ce langage n'utilise pas de ';' en fin d'instruction.\n");
 }
+#line 562 "lex.yy.c"
 #line 563 "lex.yy.c"
-#line 564 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -571,7 +571,7 @@ static void suggerer(const char *car) {
  */
 #include <unistd.h>
 #endif
-
+    
 #ifndef YY_EXTRA_TYPE
 #define YY_EXTRA_TYPE void *
 #endif
@@ -780,7 +780,7 @@ YY_DECL
 #line 60 "lexer.l"
 
 
-#line 784 "lex.yy.c"
+#line 783 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1050,7 +1050,7 @@ YY_RULE_SETUP
 #line 118 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1054 "lex.yy.c"
+#line 1053 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

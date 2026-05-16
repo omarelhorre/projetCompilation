@@ -18,9 +18,6 @@ static int  err_pending           = 0;
 static int  err_pending_ligne     = 0;
 static char err_pending_msg[512]  = "";
 
-/* Point d'affichage unique : un seul message par episode d'erreur. Tant que
-   le parseur n'a pas reanalyse une instruction complete (instr_ok), les
-   erreurs suivantes sont des cascades et sont ignorees. */
 static void signaler_erreur(int ligne, const char *msg)
 {
     if (erreur_active)
@@ -45,8 +42,6 @@ static void instr_ok(void)
     erreur_active = 0;
 }
 
-/* Message specifique issu d'une regle de recuperation : il remplace le
-   message generique mis en attente par yyerror pour la meme erreur. */
 void enregistrer_erreur(int ligne, const char *fmt, ...)
 {
     va_list ap;
@@ -60,8 +55,6 @@ void enregistrer_erreur(int ligne, const char *fmt, ...)
     signaler_erreur(ligne, buf);
 }
 
-/* Vrai si le token courant ferme un bloc/programme : dans ce cas une erreur
-   d'instruction signifie en realite qu'un mot-cle de fermeture manque. */
 static int jeton_fermeture(void)
 {
     const char *t = cur_tok_text;
@@ -73,10 +66,7 @@ static int jeton_fermeture(void)
             || strcmp(t, "else") == 0);
 }
 
-/* Erreur survenant apres le corps d'un bloc : le mot-cle de fermeture n'a pas
-   pu etre reconnu. Cela vient soit d'un closer manquant, soit (souvent) d'une
-   instruction invalide dans le corps qui a desynchronise l'analyse. On ne
-   pretend donc PAS que le closer est forcement absent. */
+
 static void erreur_bloc_non_ferme(int ligne, const char *bloc, const char *closer)
 {
     enregistrer_erreur(ligne,
@@ -209,14 +199,14 @@ instr:
 
     | READ LPAREN ID error
         {
-            enregistrer_erreur(@1.first_line, "Parenthese fermante ')' attendue dans 'read(...)'");
+            enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans 'read(...)'");
             free($3);
             yyerrok;
         }
     | READ LPAREN error
         { enregistrer_erreur(@1.first_line, "Identifiant attendu dans 'read(...)'"); yyerrok; }
     | READ error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante '(' attendue apres le mot-cle 'read'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'read'"); yyerrok; }
 
     | WHILE LPAREN cond RPAREN DO listinstr OD
         { instr_ok(); }
@@ -228,13 +218,13 @@ instr:
         { enregistrer_erreur(@1.first_line, "Mot-cle 'do' attendu apres la condition du 'while'"); yyerrok; }
 
     | WHILE LPAREN cond error
-        { enregistrer_erreur(@1.first_line, "Parenthese fermante ')' attendue dans la condition du 'while'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans la condition du 'while'"); yyerrok; }
 
     | WHILE LPAREN error
         { enregistrer_erreur(@1.first_line, "Condition invalide dans 'while(...)'"); yyerrok; }
 
     | WHILE error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante '(' attendue apres le mot-cle 'while'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'while'"); yyerrok; }
 
     | IF LPAREN cond RPAREN THEN listinstr FI
         { instr_ok(); }
@@ -252,13 +242,14 @@ instr:
         { enregistrer_erreur(@1.first_line, "Mot-cle 'then' attendu apres la condition du 'if'"); yyerrok; }
 
     | IF LPAREN cond error
-        { enregistrer_erreur(@1.first_line, "Parenthese fermante ')' attendue dans la condition du 'if'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese fermante 'pf' attendue dans  la condition du  'if'"); yyerrok; }
 
     | IF LPAREN error
         { enregistrer_erreur(@1.first_line, "Condition invalide dans 'if(...)'"); yyerrok; }
 
     | IF error
-        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante '(' attendue apres le mot-cle 'if'"); yyerrok; }
+        { enregistrer_erreur(@1.first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'if'"); yyerrok; }
+
 
     | FOR ID ASSIGN expr TO expr DO listinstr DONE
         { set_value($2, $4, @2.first_line); free($2); instr_ok(); }
