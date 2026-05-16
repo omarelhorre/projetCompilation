@@ -29,9 +29,9 @@ void declare(char *name, int ligne)
 
     if (find(name) != -1) {
         fprintf(stderr,
-                "Erreur Semantique\nLigne : %d\nVariable : '%s'\n"
+                "Erreur Semantique Ligne : %d Variable : '%s'\n"
                 "Probleme : Variable deja declaree\n"
-                "Hint : Chaque variable ne peut etre declaree qu'une seule fois.\n",
+                " Chaque variable ne peut etre declaree qu'une seule fois.\n",
                 ligne, name);
         nb_erreurs++;
         return;
@@ -59,8 +59,11 @@ int lookup(char *name, int ligne)
     int index = find(name);
 
     if (index == -1) {
-        fprintf(stderr,"Erreur Semantique\nLigne : %d\nVariable : '%s'\n"
-            "Probleme : Variable non declaree\n",ligne, name ? name : "(null)", name ? name : "(null)");
+        fprintf(stderr,
+                "Erreur Semantique Ligne : %d Variable : '%s'\n"
+                "Probleme : Variable non declaree\n"
+                " Declarez la variable avec 'int %s' avant de l'utiliser.\n",
+                ligne, name ? name : "(null)", name ? name : "(null)");
         nb_erreurs++;
         return 0;
     }
@@ -74,9 +77,9 @@ void set_value(char *name, int val, int ligne)
 
     if (index == -1) {
         fprintf(stderr,
-                "Erreur Semantique\nLigne : %d\nVariable : '%s'\n"
+                "Erreur Semantique Ligne : %d Variable : '%s'\n"
                 "Probleme : Variable non declaree\n"
-                "Hint : Declarez la variable avec 'int %s' avant de l'utiliser.\n",
+                " Declarez la variable avec 'int %s' avant de l'utiliser.\n",
                 ligne, name ? name : "(null)", name ? name : "(null)");
         nb_erreurs++;
         return;

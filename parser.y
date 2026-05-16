@@ -68,21 +68,13 @@ static int jeton_fermeture(void)
 
 static void erreur_bloc_non_ferme(int ligne, const char *bloc, const char *closer)
 {
-    enregistrer_erreur(ligne,
-        "Bloc '%s' non ferme correctement : '%s' attendu ici "
-        "(une instruction du corps est probablement invalide ou incomplete, "
-        "ou '%s' est manquant/mal place). Token rencontre : '%s'",
-        bloc, closer, closer,
-        cur_tok_text[0] ? cur_tok_text : "fin de fichier");
+    enregistrer_erreur(ligne,"Bloc '%s' non ferme correctement : '%s' attendu ici ""(une instruction du corps est probablement invalide ou incomplete, ""ou '%s' est manquantou mal  place), Token rencontre : '%s'",bloc, closer, closer,cur_tok_text[0] ? cur_tok_text : "fin de fichier");
 }
 
 static void erreur_instr(int ligne, const char *msg_defaut)
 {
     if (jeton_fermeture())
-        enregistrer_erreur(ligne,
-            "Bloc ou programme non ferme : un mot-cle de fermeture "
-            "('done', 'od', 'fi' ou 'end') est manquant avant '%s'",
-            cur_tok_text[0] ? cur_tok_text : "la fin du fichier");
+        enregistrer_erreur(ligne, "Bloc ou programme non ferme : un mot-cle de fermeture ""('done', 'od', 'fi' ou 'end') est manquant avant '%s'",cur_tok_text[0] ? cur_tok_text : "la fin du fichier");
     else
         enregistrer_erreur(ligne, "%s", msg_defaut);
 }
@@ -98,15 +90,15 @@ static void erreur_instr(int ligne, const char *msg_defaut)
 %token LPAREN RPAREN
 %token ASSIGN
 
-%token GT LT GE LE NE EQ SEQ   /* >, <, >=, <=, !=, ==, === */
+%token GT LT GE LE NE EQ SEQ  
 %token PLUS MINUS MUL DIV MOD POW
 
 
 /*union pour stocker les valeurs de token */
 
 %union {
-    int num;     //les nombres
-    char *str;  //les chaines
+    int num;     
+    char *str;  
 }
 
 

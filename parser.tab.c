@@ -88,9 +88,6 @@ static int  err_pending           = 0;
 static int  err_pending_ligne     = 0;
 static char err_pending_msg[512]  = "";
 
-/* Point d'affichage unique : un seul message par episode d'erreur. Tant que
-   le parseur n'a pas reanalyse une instruction complete (instr_ok), les
-   erreurs suivantes sont des cascades et sont ignorees. */
 static void signaler_erreur(int ligne, const char *msg)
 {
     if (erreur_active)
@@ -115,8 +112,6 @@ static void instr_ok(void)
     erreur_active = 0;
 }
 
-/* Message specifique issu d'une regle de recuperation : il remplace le
-   message generique mis en attente par yyerror pour la meme erreur. */
 void enregistrer_erreur(int ligne, const char *fmt, ...)
 {
     va_list ap;
@@ -130,8 +125,6 @@ void enregistrer_erreur(int ligne, const char *fmt, ...)
     signaler_erreur(ligne, buf);
 }
 
-/* Vrai si le token courant ferme un bloc/programme : dans ce cas une erreur
-   d'instruction signifie en realite qu'un mot-cle de fermeture manque. */
 static int jeton_fermeture(void)
 {
     const char *t = cur_tok_text;
@@ -143,32 +136,20 @@ static int jeton_fermeture(void)
             || strcmp(t, "else") == 0);
 }
 
-/* Erreur survenant apres le corps d'un bloc : le mot-cle de fermeture n'a pas
-   pu etre reconnu. Cela vient soit d'un closer manquant, soit (souvent) d'une
-   instruction invalide dans le corps qui a desynchronise l'analyse. On ne
-   pretend donc PAS que le closer est forcement absent. */
 static void erreur_bloc_non_ferme(int ligne, const char *bloc, const char *closer)
 {
-    enregistrer_erreur(ligne,
-        "Bloc '%s' non ferme correctement : '%s' attendu ici "
-        "(une instruction du corps est probablement invalide ou incomplete, "
-        "ou '%s' est manquant/mal place). Token rencontre : '%s'",
-        bloc, closer, closer,
-        cur_tok_text[0] ? cur_tok_text : "fin de fichier");
+    enregistrer_erreur(ligne,"Bloc '%s' non ferme correctement : '%s' attendu ici ""(une instruction du corps est probablement invalide ou incomplete, ""ou '%s' est manquantou mal  place), Token rencontre : '%s'",bloc, closer, closer,cur_tok_text[0] ? cur_tok_text : "fin de fichier");
 }
 
 static void erreur_instr(int ligne, const char *msg_defaut)
 {
     if (jeton_fermeture())
-        enregistrer_erreur(ligne,
-            "Bloc ou programme non ferme : un mot-cle de fermeture "
-            "('done', 'od', 'fi' ou 'end') est manquant avant '%s'",
-            cur_tok_text[0] ? cur_tok_text : "la fin du fichier");
+        enregistrer_erreur(ligne, "Bloc ou programme non ferme : un mot-cle de fermeture ""('done', 'od', 'fi' ou 'end') est manquant avant '%s'",cur_tok_text[0] ? cur_tok_text : "la fin du fichier");
     else
         enregistrer_erreur(ligne, "%s", msg_defaut);
 }
 
-#line 172 "parser.tab.c"
+#line 153 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -589,12 +570,12 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   145,   145,   148,   153,   161,   162,   163,   171,   174,
-     177,   180,   191,   201,   204,   207,   210,   216,   218,   221,
-     224,   227,   230,   233,   236,   239,   242,   245,   248,   251,
-     254,   257,   260,   264,   267,   274,   281,   288,   296,   301,
-     302,   303,   304,   313,   322,   323,   324,   325,   327,   336,
-     337,   338,   339,   340,   341,   342
+       0,   126,   126,   129,   134,   142,   143,   144,   152,   155,
+     158,   161,   172,   182,   185,   188,   191,   197,   199,   202,
+     205,   208,   211,   214,   217,   220,   223,   226,   229,   232,
+     235,   238,   241,   245,   248,   255,   262,   269,   276,   281,
+     282,   283,   284,   293,   302,   303,   304,   305,   307,   315,
+     316,   317,   318,   319,   320,   321
 };
 #endif
 
@@ -1594,72 +1575,72 @@ yyreduce:
     switch (yyn)
       {
   case 2: /* program: BEGIN_T listinstr END  */
-#line 146 "parser.y"
+#line 127 "parser.y"
         { /* OK */}
-#line 1600 "parser.tab.c"
+#line 1581 "parser.tab.c"
     break;
 
   case 3: /* program: error listinstr END  */
-#line 149 "parser.y"
+#line 130 "parser.y"
         {
-            enregistrer_erreur((yylsp[-2]).first_line,"Le programme doit commencer par le mot-cle 'begin'");
+            enregistrer_erreur((yylsp[-2]).first_line,"Le programme doit commencer obligatoirement  par le mot-cle 'begin'");
             yyerrok;
         }
-#line 1609 "parser.tab.c"
+#line 1590 "parser.tab.c"
     break;
 
   case 4: /* program: BEGIN_T listinstr error  */
-#line 154 "parser.y"
+#line 135 "parser.y"
         {
-            enregistrer_erreur((yylsp[0]).first_line,"Structure du programme invalide : impossible de fermer le programme avec 'end' (un mot-cle est probablement en trop ou mal place, ou une instruction est incomplete avant 'end'). Dernier token analyse : '%s'", prev_tok_text);
+            enregistrer_erreur((yylsp[0]).first_line,"Structure du programme invalide : impossible de fermer le programme avec 'end' un mot-cle est probablement  mal place, ou une instruction est manquant avant 'end', Dernier token analyse est: '%s'", prev_tok_text);
             yyerrok;
         }
-#line 1618 "parser.tab.c"
+#line 1599 "parser.tab.c"
     break;
 
   case 7: /* listinstr: error listinstr  */
-#line 164 "parser.y"
+#line 145 "parser.y"
         {
             yyerrok;
             yyclearin;
         }
-#line 1627 "parser.tab.c"
+#line 1608 "parser.tab.c"
     break;
 
   case 8: /* instr: INT ID  */
-#line 172 "parser.y"
+#line 153 "parser.y"
         { declare((yyvsp[0].str), (yylsp[0]).first_line); free((yyvsp[0].str)); instr_ok(); }
-#line 1633 "parser.tab.c"
+#line 1614 "parser.tab.c"
     break;
 
   case 9: /* instr: INT error  */
-#line 175 "parser.y"
+#line 156 "parser.y"
         { enregistrer_erreur((yylsp[-1]).first_line, "Identifiant attendu apres le mot-cle 'int'"); yyerrok; }
-#line 1639 "parser.tab.c"
+#line 1620 "parser.tab.c"
     break;
 
   case 10: /* instr: ID ASSIGN expr  */
-#line 178 "parser.y"
+#line 159 "parser.y"
         { set_value((yyvsp[-2].str), (yyvsp[0].num), (yylsp[-2]).first_line); free((yyvsp[-2].str)); instr_ok(); }
-#line 1645 "parser.tab.c"
+#line 1626 "parser.tab.c"
     break;
 
   case 11: /* instr: ID ASSIGN error  */
-#line 181 "parser.y"
+#line 162 "parser.y"
         {
             char d[256];
             snprintf(d, sizeof(d),
-                "Expression invalide dans l'affectation de la variable '%s'"
+            "Expression invalide dans l'affectation de la variable '%s'"
                 " (token inattendu : '%s')", (yyvsp[-2].str), prev_tok_text);
             erreur_instr((yylsp[-2]).first_line, d);
             free((yyvsp[-2].str));
             yyerrok;
         }
-#line 1659 "parser.tab.c"
+#line 1640 "parser.tab.c"
     break;
 
   case 12: /* instr: ID error  */
-#line 192 "parser.y"
+#line 173 "parser.y"
         {
             char d[256];
             snprintf(d, sizeof(d),
@@ -1668,206 +1649,205 @@ yyreduce:
             free((yyvsp[-1].str));
             yyerrok;
         }
-#line 1672 "parser.tab.c"
+#line 1653 "parser.tab.c"
     break;
 
   case 13: /* instr: WRITE expr  */
-#line 202 "parser.y"
+#line 183 "parser.y"
         { printf("%d\n", (yyvsp[0].num)); instr_ok(); }
-#line 1678 "parser.tab.c"
+#line 1659 "parser.tab.c"
     break;
 
   case 14: /* instr: WRITE error  */
-#line 205 "parser.y"
+#line 186 "parser.y"
         { erreur_instr((yylsp[-1]).first_line, "Expression invalide apres le mot-cle 'write'"); yyerrok; }
-#line 1684 "parser.tab.c"
+#line 1665 "parser.tab.c"
     break;
 
   case 15: /* instr: READ LPAREN ID RPAREN  */
-#line 208 "parser.y"
+#line 189 "parser.y"
         { lookup((yyvsp[-1].str), (yylsp[-1]).first_line); free((yyvsp[-1].str)); instr_ok(); }
-#line 1690 "parser.tab.c"
+#line 1671 "parser.tab.c"
     break;
 
   case 16: /* instr: READ LPAREN ID error  */
-#line 211 "parser.y"
+#line 192 "parser.y"
         {
-            enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante ')' attendue dans 'read(...)'");
+            enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante  attendue dans 'read(...)'");
             free((yyvsp[-1].str));
             yyerrok;
         }
-#line 1700 "parser.tab.c"
+#line 1681 "parser.tab.c"
     break;
 
   case 17: /* instr: READ LPAREN error  */
-#line 217 "parser.y"
+#line 198 "parser.y"
         { enregistrer_erreur((yylsp[-2]).first_line, "Identifiant attendu dans 'read(...)'"); yyerrok; }
-#line 1706 "parser.tab.c"
+#line 1687 "parser.tab.c"
     break;
 
   case 18: /* instr: READ error  */
-#line 219 "parser.y"
-        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante '(' attendue apres le mot-cle 'read'"); yyerrok; }
-#line 1712 "parser.tab.c"
+#line 200 "parser.y"
+        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante  attendue apres le mot-cle 'read'"); yyerrok; }
+#line 1693 "parser.tab.c"
     break;
 
   case 19: /* instr: WHILE LPAREN cond RPAREN DO listinstr OD  */
-#line 222 "parser.y"
+#line 203 "parser.y"
         { instr_ok(); }
-#line 1718 "parser.tab.c"
+#line 1699 "parser.tab.c"
     break;
 
   case 20: /* instr: WHILE LPAREN cond RPAREN DO listinstr error  */
-#line 225 "parser.y"
+#line 206 "parser.y"
         { erreur_bloc_non_ferme((yylsp[-6]).first_line, "while", "od"); yyerrok; }
-#line 1724 "parser.tab.c"
+#line 1705 "parser.tab.c"
     break;
 
   case 21: /* instr: WHILE LPAREN cond RPAREN error  */
-#line 228 "parser.y"
+#line 209 "parser.y"
         { enregistrer_erreur((yylsp[-4]).first_line, "Mot-cle 'do' attendu apres la condition du 'while'"); yyerrok; }
-#line 1730 "parser.tab.c"
+#line 1711 "parser.tab.c"
     break;
 
   case 22: /* instr: WHILE LPAREN cond error  */
-#line 231 "parser.y"
-        { enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante ')' attendue dans la condition du 'while'"); yyerrok; }
-#line 1736 "parser.tab.c"
+#line 212 "parser.y"
+        { enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante  attendue dans la condition du 'while'"); yyerrok; }
+#line 1717 "parser.tab.c"
     break;
 
   case 23: /* instr: WHILE LPAREN error  */
-#line 234 "parser.y"
+#line 215 "parser.y"
         { enregistrer_erreur((yylsp[-2]).first_line, "Condition invalide dans 'while(...)'"); yyerrok; }
-#line 1742 "parser.tab.c"
+#line 1723 "parser.tab.c"
     break;
 
   case 24: /* instr: WHILE error  */
-#line 237 "parser.y"
-        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante '(' attendue apres le mot-cle 'while'"); yyerrok; }
-#line 1748 "parser.tab.c"
+#line 218 "parser.y"
+        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante  attendue apres le mot-cle 'while'"); yyerrok; }
+#line 1729 "parser.tab.c"
     break;
 
   case 25: /* instr: IF LPAREN cond RPAREN THEN listinstr FI  */
-#line 240 "parser.y"
+#line 221 "parser.y"
         { instr_ok(); }
-#line 1754 "parser.tab.c"
+#line 1735 "parser.tab.c"
     break;
 
   case 26: /* instr: IF LPAREN cond RPAREN THEN listinstr ELSE listinstr FI  */
-#line 243 "parser.y"
+#line 224 "parser.y"
         { instr_ok(); }
-#line 1760 "parser.tab.c"
+#line 1741 "parser.tab.c"
     break;
 
   case 27: /* instr: IF LPAREN cond RPAREN THEN listinstr ELSE listinstr error  */
-#line 246 "parser.y"
+#line 227 "parser.y"
         { erreur_bloc_non_ferme((yylsp[-8]).first_line, "if-else", "fi"); yyerrok; }
-#line 1766 "parser.tab.c"
+#line 1747 "parser.tab.c"
     break;
 
   case 28: /* instr: IF LPAREN cond RPAREN THEN listinstr error  */
-#line 249 "parser.y"
+#line 230 "parser.y"
         { erreur_bloc_non_ferme((yylsp[-6]).first_line, "if", "fi' ou 'else"); yyerrok; }
-#line 1772 "parser.tab.c"
+#line 1753 "parser.tab.c"
     break;
 
   case 29: /* instr: IF LPAREN cond RPAREN error  */
-#line 252 "parser.y"
+#line 233 "parser.y"
         { enregistrer_erreur((yylsp[-4]).first_line, "Mot-cle 'then' attendu apres la condition du 'if'"); yyerrok; }
-#line 1778 "parser.tab.c"
+#line 1759 "parser.tab.c"
     break;
 
   case 30: /* instr: IF LPAREN cond error  */
-#line 255 "parser.y"
-        { enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante 'pf' attendue dans  la condition du  'if'"); yyerrok; }
-#line 1784 "parser.tab.c"
+#line 236 "parser.y"
+        { enregistrer_erreur((yylsp[-3]).first_line, "Parenthese fermante  attendue dans  la condition du  'if'"); yyerrok; }
+#line 1765 "parser.tab.c"
     break;
 
   case 31: /* instr: IF LPAREN error  */
-#line 258 "parser.y"
+#line 239 "parser.y"
         { enregistrer_erreur((yylsp[-2]).first_line, "Condition invalide dans 'if(...)'"); yyerrok; }
-#line 1790 "parser.tab.c"
+#line 1771 "parser.tab.c"
     break;
 
   case 32: /* instr: IF error  */
-#line 261 "parser.y"
-        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante 'po' attendue apres le mot-cle 'if'"); yyerrok; }
-#line 1796 "parser.tab.c"
+#line 242 "parser.y"
+        { enregistrer_erreur((yylsp[-1]).first_line, "Parenthese ouvrante  attendue apres le mot-cle 'if'"); yyerrok; }
+#line 1777 "parser.tab.c"
     break;
 
   case 33: /* instr: FOR ID ASSIGN expr TO expr DO listinstr DONE  */
-#line 265 "parser.y"
+#line 246 "parser.y"
         { set_value((yyvsp[-7].str), (yyvsp[-5].num), (yylsp[-7]).first_line); free((yyvsp[-7].str)); instr_ok(); }
-#line 1802 "parser.tab.c"
+#line 1783 "parser.tab.c"
     break;
 
   case 34: /* instr: FOR ID ASSIGN expr TO expr DO listinstr error  */
-#line 268 "parser.y"
+#line 249 "parser.y"
         {
             erreur_bloc_non_ferme((yylsp[-8]).first_line, "for", "done");
             free((yyvsp[-7].str));
             yyerrok;
         }
-#line 1812 "parser.tab.c"
+#line 1793 "parser.tab.c"
     break;
 
   case 35: /* instr: FOR ID ASSIGN expr TO error  */
-#line 275 "parser.y"
+#line 256 "parser.y"
         {
             enregistrer_erreur((yylsp[-5]).first_line, "Expression invalide apres 'to' dans la boucle 'for'");
             free((yyvsp[-4].str));
             yyerrok;
         }
-#line 1822 "parser.tab.c"
+#line 1803 "parser.tab.c"
     break;
 
   case 36: /* instr: FOR ID ASSIGN error  */
-#line 282 "parser.y"
+#line 263 "parser.y"
         {
             enregistrer_erreur((yylsp[-3]).first_line, "Expression invalide apres ':=' dans la boucle 'for'");
             free((yyvsp[-2].str));
             yyerrok;
         }
-#line 1832 "parser.tab.c"
+#line 1813 "parser.tab.c"
     break;
 
   case 37: /* instr: FOR ID error  */
-#line 289 "parser.y"
+#line 270 "parser.y"
         {
-            enregistrer_erreur((yylsp[-1]).first_line,
-                "Operateur d'affectation ':=' attendu apres la variable '%s' dans la boucle 'for'", (yyvsp[-1].str));
+            enregistrer_erreur((yylsp[-1]).first_line,"Operateur d'affectation ':=' attendu apres la variable '%s' dans la boucle 'for'", (yyvsp[-1].str));
             free((yyvsp[-1].str));
             yyerrok;
         }
-#line 1843 "parser.tab.c"
+#line 1823 "parser.tab.c"
     break;
 
   case 38: /* instr: FOR error  */
-#line 297 "parser.y"
+#line 277 "parser.y"
         { enregistrer_erreur((yylsp[-1]).first_line, "Identifiant attendu apres le mot-cle 'for'"); yyerrok; }
-#line 1849 "parser.tab.c"
+#line 1829 "parser.tab.c"
     break;
 
   case 39: /* expr: expr PLUS expr  */
-#line 301 "parser.y"
+#line 281 "parser.y"
                            { (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num); }
-#line 1855 "parser.tab.c"
+#line 1835 "parser.tab.c"
     break;
 
   case 40: /* expr: expr MINUS expr  */
-#line 302 "parser.y"
+#line 282 "parser.y"
                            { (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num); }
-#line 1861 "parser.tab.c"
+#line 1841 "parser.tab.c"
     break;
 
   case 41: /* expr: expr MUL expr  */
-#line 303 "parser.y"
+#line 283 "parser.y"
                            { (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num); }
-#line 1867 "parser.tab.c"
+#line 1847 "parser.tab.c"
     break;
 
   case 42: /* expr: expr DIV expr  */
-#line 305 "parser.y"
+#line 285 "parser.y"
         {
             if ((yyvsp[0].num) == 0) {
                 enregistrer_erreur((yylsp[-1]).first_line, "Division par zero");
@@ -1876,11 +1856,11 @@ yyreduce:
                 (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num);
             }
         }
-#line 1880 "parser.tab.c"
+#line 1860 "parser.tab.c"
     break;
 
   case 43: /* expr: expr MOD expr  */
-#line 314 "parser.y"
+#line 294 "parser.y"
         {
             if ((yyvsp[0].num) == 0) {
                 enregistrer_erreur((yylsp[-1]).first_line, "Modulo par zero");
@@ -1889,45 +1869,45 @@ yyreduce:
                 (yyval.num) = (yyvsp[-2].num) % (yyvsp[0].num);
             }
         }
-#line 1893 "parser.tab.c"
+#line 1873 "parser.tab.c"
     break;
 
   case 44: /* expr: expr POW expr  */
-#line 322 "parser.y"
+#line 302 "parser.y"
                            { (yyval.num) = (int)pow((yyvsp[-2].num), (yyvsp[0].num)); }
-#line 1899 "parser.tab.c"
+#line 1879 "parser.tab.c"
     break;
 
   case 45: /* expr: ID  */
-#line 323 "parser.y"
+#line 303 "parser.y"
                            { (yyval.num) = lookup((yyvsp[0].str), (yylsp[0]).first_line); free((yyvsp[0].str)); }
-#line 1905 "parser.tab.c"
+#line 1885 "parser.tab.c"
     break;
 
   case 46: /* expr: NUM  */
-#line 324 "parser.y"
+#line 304 "parser.y"
                            { (yyval.num) = (yyvsp[0].num); }
-#line 1911 "parser.tab.c"
+#line 1891 "parser.tab.c"
     break;
 
   case 47: /* expr: LPAREN expr RPAREN  */
-#line 325 "parser.y"
+#line 305 "parser.y"
                            { (yyval.num) = (yyvsp[-1].num); }
-#line 1917 "parser.tab.c"
+#line 1897 "parser.tab.c"
     break;
 
   case 48: /* expr: LPAREN expr error  */
-#line 328 "parser.y"
+#line 308 "parser.y"
         {
-            enregistrer_erreur((yylsp[-2]).first_line,"Parenthese fermante ')' manquante pour fermer l'expression entre parentheses (recu : '%s')", prev_tok_text);
+            enregistrer_erreur((yylsp[-2]).first_line,"Parenthese fermante  manquante pour fermer l'expression entre parentheses : '%s'", prev_tok_text);
             (yyval.num) = (yyvsp[-1].num);
             yyerrok;
         }
-#line 1927 "parser.tab.c"
+#line 1907 "parser.tab.c"
     break;
 
 
-#line 1931 "parser.tab.c"
+#line 1911 "parser.tab.c"
 
         default: break;
       }
@@ -2135,8 +2115,7 @@ yyreturn:
   return yyresult;
 }
 
-#line 345 "parser.y"
-
+#line 324 "parser.y"
 
 void yyerror(const char *msg) {
     (void)msg;
@@ -2147,7 +2126,6 @@ void yyerror(const char *msg) {
     snprintf(err_pending_msg, sizeof(err_pending_msg),
              "Erreur de syntaxe pres de '%s'", cur_tok_text);
 }
-
 int main(void)
 {
     yyparse();
